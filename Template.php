@@ -45,7 +45,7 @@
  *   http://www.phpwact.org/pattern/model_view_controller  About MVC
  * 
  * @link     http://code.google.com/p/php-template/
- * @license  http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @license  http://creativecommons.org/licenses/by-sa/3.0/
  * @author   Nasibullin Rinat
  * @version  2.2.0
  */
