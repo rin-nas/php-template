@@ -9,8 +9,7 @@
  *     the best solution for high loaded projects.
  *
  * Features and advantages
- *   * High speed execution (by PHP)
- *   * The flexibility and power (by PHP)
+ *   * High speed execution, flexibility and power (by PHP)
  *   * Very easy to use
  *   * The local name space within a single template
  *   * Ability to secure execution of PHP code (checking for valid syntax)
@@ -22,11 +21,12 @@
  *   You may use any control structures, available in PHP (if/else, foreach, do/while, break/continue, etc.)
  *   Basic print: <?=$var?>, <?=$array['key']?>
  *   Print with helpers: <?=UTF8::strlen($var)?>
- *   To insert another template (with the same name space), use
+ *   To insert another template with the same name space, use
  *       <? require(__DIR__ . '/filename.ext') ?> (If the file is not found, the script throws E_ERROR and exit)
  *       <? include(__DIR__ . '/filename.ext') ?> (If the file is not found, the script throws E_WARNING and continue work)
- *   To insert template (with his isolated name space), use
- *       <?=Template::render(__DIR__ . '/filename.ext', $vars)?>
+ *   To insert another template with his isolated name space, use
+ *       <?=Template::render(__DIR__ . '/filename.ext', $vars)?> or
+ *       <?=Template::execute($template_content, $vars)?>
  *
  * Hints
  *   To get all local variables in a template you can use get_defined_vars().
@@ -41,9 +41,17 @@
  *   * By default, helpers can be only PHP's built-in functions or the static methods of classes.
  *     You can also use the methods of objects accessible from the template.
  *
+ * History
+ *   This class is being developed since 2005 and has proved to be excellent.
+ *   Experience has shown that template engines such as Smarty, Twig and other
+ *   causes more problems than benefits.
+ *   The main disadvantages: new syntax, limited functionality,
+ *   execution low speed and/or compilation overhead, problems with debugging.
+ *   PHP based template class does not have these disadvantages.
+ *
  * Useful links
  *   http://www.phpwact.org/pattern/model_view_controller  About MVC
- * 
+ *
  * @link     http://code.google.com/p/php-template/
  * @license  http://creativecommons.org/licenses/by-sa/3.0/
  * @author   Nasibullin Rinat
@@ -134,7 +142,7 @@ class Template
 	 *
 	 * @return  string|bool|null  If output buffering isn't active then FALSE is returned.
 	 */
-	public static function end(/*$filter1, $filter2, ...*/)
+	public static function end(/*callback $filter1, callback $filter2, ...*/)
 	{
 		$s = ob_get_clean();
 		if (! is_string($s)) return false;
@@ -142,8 +150,7 @@ class Template
 		foreach (func_get_args() as $arg)
 		{
 			if (is_callable($arg)) $s = call_user_func($arg, $s);
-			if ($s === null) return null;
-			if (! is_string($s)) return false;
+			if (! is_string($s)) return $s === null ? null : false;
 		}
 
 		//if ($is_strip_spaces && is_string($s)) $s = trim(preg_replace('/[\x00-\x20\x7f]++/sSX', ' ', $s), ' ');
@@ -155,7 +162,7 @@ class Template
 	 *
 	 * @param   string|array              $name   Variable name or array of variables
 	 * @param   scalar|array|object|null  $value  Variable value, any type except "resource"
-	 * @return  bool                              TRUE if ok, FALSE if error occured
+	 * @return  bool                              TRUE if ok, FALSE + E_USER_WARNING if error occured
 	 */
 	public function assign($name, $value = null)
 	{
@@ -196,7 +203,7 @@ class Template
 	/**
 	 * Open, parse, and return the template file.
 	 * Method can be called as static!
-	 * If file of the pattern is not found, gives warning and returns FALSE
+	 * If file of the template is not found, gives warning and returns FALSE
 	 *
 	 * @param   string|null        $filename  Template file name
 	 * @param   array|null         $vars      Template variables
@@ -240,6 +247,7 @@ class Template
 	{
 		if (! ReflectionTypeHint::isValid()) return false;
 		if (! is_string($s) || (strpos($s, '<?') === false && strpos($s, '<%') === false)) return $s;
+
 		if ($mode === self::EXECUTE_MODE_NO_CHECK) $s2 = preg_replace('~<%(.*?)%>~sSX', '<?$1?>', $s);
 		else
 		{
@@ -286,7 +294,7 @@ class Template
 	 * @param   string|null  $s               Template content
 	 * @param   int          $mode            Mode, see self::EXECUTE_MODE_*
 	 * @param   string|null  $allow_funcs_re  Regexp for possible helpers
-	 * @return  bool                          Returns FALSE if error occured
+	 * @return  bool                          TRUE if ok, FALSE otherwise
 	 */
 	public static function valid(
 		$s,
