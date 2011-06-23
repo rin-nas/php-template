@@ -4,7 +4,7 @@
  *
  * Purpose
  *   * The class can be used in the component approach (MVC),
- *     when the template - a leading, component (controller) - slave.
+ *     when the template — a leading, component (controller) — slave.
  *   * In view of the high speed of PHP-template perhaps
  *     the best solution for high loaded projects.
  *
@@ -12,7 +12,7 @@
  *   * High speed execution, flexibility and power (by PHP)
  *   * Very easy to use
  *   * The local name space within a single template
- *   * Ability to secure execution of PHP code (checking for valid syntax)
+ *   * Ability to secure execution of PHP code (checking for a valid syntax)
  *
  * Disadvantages
  *   * A bit verbose syntax (by PHP) :)
@@ -27,6 +27,16 @@
  *   To insert another template with his isolated name space, use
  *       <?=Template::render(__DIR__ . '/filename.ext', $vars)?> or
  *       <?=Template::execute($template_content, $vars)?>
+ *	 It is possible within a single template to keep a few sub-templates, code example:
+ *		<? Template::begin() ?>
+ *          <ul>
+ *			<%foreach ($rows as $row) : %>
+ *				<li><%=$row['caption']%></li>
+ *			<%endforeach%>
+ *          </ul>
+ *		<? $tpl = Template::end() ?>
+ *		...
+ *		<?= Template::execute($tpl, array('rows' => $rows)) ?>
  *
  * Hints
  *   To get all local variables in a template you can use get_defined_vars().
@@ -118,17 +128,6 @@ class Template
 
 	/**
 	 * Set the start of capture of the template
-	 * Hint:
-	 *		It is possible within a single template to keep a few sub-templates, code example:
-	 *		<? Template::begin() ?>
-	 *          <ul>
-	 *			<%foreach ($rows as $row) : %>
-	 *				<li><%=$row['caption']%></li>
-	 *			<%endforeach%>
-	 *          </ul>
-	 *		<? $tpl = Template::end() ?>
-	 *		...
-	 *		<?= Template::execute($tpl, array('rows' => $rows)) ?>
 	 *
 	 * @return bool
 	 */
