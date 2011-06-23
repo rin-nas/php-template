@@ -27,16 +27,16 @@
  *   To insert another template with his isolated name space, use
  *       <?=Template::render(__DIR__ . '/filename.ext', $vars)?> or
  *       <?=Template::execute($template_content, $vars)?>
- *	 It is possible within a single template to keep a few sub-templates, code example:
- *		<? Template::begin() ?>
- *          <ul>
- *			<%foreach ($rows as $row) : %>
- *				<li><%=$row['caption']%></li>
- *			<%endforeach%>
- *          </ul>
- *		<? $tpl = Template::end() ?>
- *		...
- *		<?= Template::execute($tpl, array('rows' => $rows)) ?>
+ *   It is possible within a single template to keep a few sub-templates, code example:
+ *      <? Template::begin() ?>
+ *        <ul>
+ *          <%foreach ($rows as $row) : %>
+ *            <li><%=$row['caption']%></li>
+ *          <%endforeach%>
+ *        </ul>
+ *      <? $tpl = Template::end() ?>
+ *      ...
+ *      <?= Template::execute($tpl, array('rows' => $rows)) ?>
  *
  * Hints
  *   To get all local variables in a template you can use get_defined_vars().
