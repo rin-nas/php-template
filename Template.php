@@ -12,7 +12,7 @@
  *   * High speed execution, flexibility and power (by PHP)
  *   * Very easy to use
  *   * The local name space within a single template
- *   * Ability to secure execution of PHP code (checking for a valid syntax)
+ *   * Ability to secure execution of PHP code (checking for valid syntax)
  *
  * Disadvantages
  *   * A bit verbose syntax (by PHP) :)
@@ -27,16 +27,6 @@
  *   To insert another template with his isolated name space, use
  *       <?=Template::render(__DIR__ . '/filename.ext', $vars)?> or
  *       <?=Template::execute($template_content, $vars)?>
- *   It is possible within a single template to keep a few sub-templates, code example:
- *      <? Template::begin() ?>
- *        <ul>
- *          <%foreach ($rows as $row) : %>
- *            <li><%=$row['caption']%></li>
- *          <%endforeach%>
- *        </ul>
- *      <? $tpl = Template::end() ?>
- *      ...
- *      <?= Template::execute($tpl, array('rows' => $rows)) ?>
  *
  * Hints
  *   To get all local variables in a template you can use get_defined_vars().
@@ -46,8 +36,8 @@
  *
  * Limitations
  *   * Syntax <script language="php">…</script> is not supported (for security reasons).
- *   * $this оbject from the template is not available (for security reasons).
- *     Another оbjects can be passed to the template without limitations.
+ *   * $this object from the template is not available (for security reasons).
+ *     Another objects can be passed to the template without limitations.
  *   * By default, helpers can be only PHP's built-in functions or the static methods of classes.
  *     You can also use the methods of objects accessible from the template.
  *
@@ -128,6 +118,17 @@ class Template
 
 	/**
 	 * Set the start of capture of the template
+	 * Hint:
+	 *		It is possible within a single template to keep a few sub-templates, code example:
+	 *		<? Template::begin() ?>
+	 *          <ul>
+	 *			<%foreach ($rows as $row) : %>
+	 *				<li><%=$row['caption']%></li>
+	 *			<%endforeach%>
+	 *          </ul>
+	 *		<? $tpl = Template::end() ?>
+	 *		...
+	 *		<?= Template::execute($tpl, array('rows' => $rows)) ?>
 	 *
 	 * @return bool
 	 */
@@ -161,7 +162,7 @@ class Template
 	 *
 	 * @param   string|array              $name   Variable name or array of variables
 	 * @param   scalar|array|object|null  $value  Variable value, any type except "resource"
-	 * @return  bool                              TRUE if ok, FALSE + E_USER_WARNING if error occured
+	 * @return  bool                              TRUE if ok, FALSE + E_USER_WARNING if error occurred
 	 */
 	public function assign($name, $value = null)
 	{
@@ -206,7 +207,7 @@ class Template
 	 *
 	 * @param   string|null        $filename  Template file name
 	 * @param   array|null         $vars      Template variables
-	 * @return  string|array|bool             Returns FALSE if error occured
+	 * @return  string|array|bool             Returns FALSE if error occurred
 	 */
 	public /*static*/ function render($filename = null, array $vars = null)
 	{
@@ -235,7 +236,7 @@ class Template
 	 * @param   int          $mode             Mode, see self::EXECUTE_MODE_*
 	 * @param   string       $allow_funcs_re   Regexp for possible helpers
 	 * @param   bool         $_is_check_syntax Used by self::valid()
-	 * @return  string|bool                    Returns FALSE if error occured
+	 * @return  string|bool                    Returns FALSE if error occurred
 	 */
 	public static function execute(
 		$s,
@@ -312,7 +313,7 @@ class Template
 	 * @param   string             $__s           Template filename or content
 	 * @param   array|null         $__vars        Template variables
 	 * @param   bool               $__is_include  Include filename or evaluate content
-	 * @return  string|array|bool  Returns FALSE if error occured
+	 * @return  string|array|bool  Returns FALSE if error occurred
 	 */
 	private static function _sandbox($__s, array $__vars = null, $__is_include = true)
 	{
